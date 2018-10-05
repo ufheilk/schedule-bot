@@ -1,5 +1,18 @@
 # schedule-bot
 
+## Overview of Project
+The initial idea for the project was, as can be seen from the questions, a text-based service which could inform people about the wait times for the various on-campus dining locations so that they would be better able to chose the dining location which fits into their preferences / needs at the time. These wait times would be crowdsourced from the userbase of the serivce, so that the times would be current and accurate. Long wait times are a major issue that many students have with the current dining system so it seemed that this might be a useful tool for a large group of people.
+
+The students who were interviewed (only students were interviewed) seemed in general very receptive to the idea of this service. Wait times were an important factor in the decision making process for all those interviewed, especially during the lunch period as time constraints are greater. There is some variation in exactly what is desired from the application: e.g. the third student interviewed would want a much smaller margin of error for expected and actual wait times. In order to reach as large an audience as possible, the service would have to meet the higher standards such as those of the third student interviewed. Additionally, the first student interviewed wanted more information than the other two (the food options at the dining locations), implying that many other students may want some sort of additional information provided besides the wait times. 
+
+The above taken into account, the fleshed-out idea for the service is as follows:
+  1. A user can query the service via text to obtain current wait times for locations on campus (as reported by other students), and optionally for additional information (e.g. menu) depending on the user's preferences by adding additional keywords to the text.
+  2. A user partaking in the service can self-report the time they waited at any of the on-campus dining locations by texting the service the name of the location followed by the time they waited. 
+  3. The waiting time for each location will be continuously updated to reflect incoming reports from students and the fact and to decrease the impact of older reports (as wait times might fluctuate rapidly), as well as filtering out extreme outliers or multiple reports from the same user in a short period of time in order to protect the integrity of the information the service gives out.
+  
+
+
+
 # Questions
 1. Do you eat on campus for lunch?  If so, where?
 2. How do you usually choose your campus dining location for lunch?
