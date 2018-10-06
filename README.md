@@ -78,4 +78,14 @@ period for shorter lines and eat quickly outside of my classroom
   2. I think within 10 minutes of the estimated time is acceptable.
   3. <5 min
   
-  
+# Requirements
+The entirety of the service, and hence its utility to students and others who often get food on campus, depends on:
+  1. The reactivity of the service, i.e. how quickly it responds to user queries or reports on wait times
+  2. The accuracy of the wait times given to students by the service
+These two items therefore make up the two most important requirements that must be considered as the process is being designed, implemented, and maintained. 
+
+Because the service will be run through a combination of Twilio / AWS, which are generally reliable, this requirement should be fulfilled automatically provided that the implementation of the service's logic is not faulty, which will be one of the goals of the design process. 
+
+The other major requirement is not so easily fulfilled and can be stated more accurately as two separate requirements:
+  1. There is a simple protocol made known to all users for how to report times (e.g. report the time you waited in line as soon as you receive your food, not when you check out)
+  2. Incoming reports for users for various dining locations are processed in a sensible way that will give incoming students a good estimate on the various wait times. 
