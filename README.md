@@ -88,4 +88,13 @@ Because the service will be run through a combination of Twilio / AWS, which are
 
 The other major requirement is not so easily fulfilled and can be stated more accurately as two separate requirements:
   1. There is a simple protocol made known to all users for how to report times (e.g. report the time you waited in line as soon as you receive your food, not when you check out)
-  2. Incoming reports for users for various dining locations are processed in a sensible way that will give incoming students a good estimate on the various wait times. 
+  2. Incoming reports from users for various dining locations are processed in a sensible way that will give incoming students a good estimate on the various wait times. 
+  
+The only other outstanding requirement which has not been covered is that the wait time information held by the service is delivered to users (upon request) in a form that will be useful for them in deciding on where they would like to eat. This requirement effectively consists of the user's ability to see the top locations with the shortest waiting time, with the option to remove (or re-add) certain dining locations from appearing so that they can tailor their results to their liking.
+
+Therefore the main requirements of the service are:
+  1. The service responds and processes incoming reports quickly
+  2. The service communicates a uniform protocol for reporting wait times to users.
+  3. The service processes incoming reports intelligently to provide as accurate of a wait time as possible to users.
+  4. The service displays the locations with the shortest lines to users upon request
+  5. The service allows users to customize their results by omitting certain locations (which can later be re-added)
