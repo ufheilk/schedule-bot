@@ -1,117 +1,934 @@
-# schedule-bot
+# Instructions
 
-## Overview of Project
-The initial idea for the project was, as can be seen from the questions, a text-based service which could inform people about the wait times for the various on-campus dining locations so that they would be better able to chose the dining location which fits into their preferences / needs at the time. These wait times would be crowdsourced from the userbase of the serivce, so that the times would be current and accurate. Long wait times are a major issue that many students have with the current dining system so it seemed that this might be a useful tool for a large group of people.
+## Getting the Code
 
-The students who were interviewed (only students were interviewed) seemed in general very receptive to the idea of this service. Wait times were an important factor in the decision making process for all those interviewed, especially during the lunch period as time constraints are greater. There is some variation in exactly what is desired from the application: e.g. the third student interviewed would want a much smaller margin of error for expected and actual wait times. In order to reach as large an audience as possible, the service would have to meet the higher standards such as those of the third student interviewed. Additionally, the first student interviewed wanted more information than the other two (the food options at the dining locations), implying that many other students may want some sort of additional information provided besides the wait times. 
+Asgn 1 is contained in the master branch of this repo. Complete this assignment and
+make sure that all of your code is committed.
 
-The above taken into account, the fleshed-out idea for the service is as follows:
-  1. A user can query the service via text to obtain current wait times for locations on campus (as reported by other students), and optionally for additional information (e.g. menu) depending on the user's preferences by adding additional keywords to the text.
-  2. A user partaking in the service can self-report the time they waited at any of the on-campus dining locations by texting the service the name of the location followed by the time they waited. 
-  3. The waiting time for each location will be continuously updated to reflect incoming reports from students and the fact and to decrease the impact of older reports (as wait times might fluctuate rapidly), as well as filtering out extreme outliers or multiple reports from the same user in a short period of time in order to protect the integrity of the information the service gives out.
-  
+Asgn 2 is contained in the "asgn2" branch of this repo. When you are ready to start
+Asgn 2, create a new "asgn2-solution" branch ("git checkout -b asgn2-solution") and
+merge the "asgn2" branch into it ("git merge asgn2").
+
+Asgn 3 is contained in the "asgn3" branch of this repo. When you are ready to start
+Asgn 3, create a new "asgn3-solution" branch from your asgn2-solution branch ("git
+checkout -b asgn3-solution") and merge the "asgn3" branch into it ("git merge asgn3").
+
+Asgn 4 is contained in the "asgn4" branch of this repo. When you are ready to start
+Asgn 4, create a new "asgn4-solution" branch from your asgn3-solution branch ("git
+checkout -b asgn4-solution") and merge the "asgn4" branch into it ("git merge asgn4").
+
+## Installation for Asgns 1-3
+
+  1. Clone the repo
+  2. Install Java 8 or higher
+  3. Install Leiningen and ensure it is on your path (https://leiningen.org/)
+  4. Install the Amazon AWS CLI Tools (https://aws.amazon.com/cli/) 
+  5. Sign up for a Cognito account for the Autograder using:
+
+     https://cs4278-2018.auth.us-east-1.amazoncognito.com/login?response_type=code&client_id=2akam9tnpjfkkdn1e38qbopkb4&redirect_uri=https://www.magnum.io
+
+     Note: after signing up, you may be redirected to a blank page, which is OK. Just
+           make sure that you create an account.
+
+  7. Run "lein repl" and make sure that you see something like:
+
+  ```
+  nREPL server started on port 55094 on host 127.0.0.1 - nrepl://127.0.0.1:55094
+  REPL-y 0.3.7, nREPL 0.2.13
+  Clojure 1.9.0
+  Java HotSpot(TM) 64-Bit Server VM 1.8.0_131-b11
+      Docs: (doc function-name-here)
+            (find-doc "part-of-name-here")
+    Source: (source function-name-here)
+   Javadoc: (javadoc java-object-or-class-here)
+      Exit: Control+D or (exit) or (quit)
+   Results: Stored in vars *1, *2, *3, an exception in *e
+
+  asgnx.cli=>
+  ```
+
+  8. Connect to your REPL from Atom by opening Atom and running the
+     command `Proto Repl: Remote Nrepl Connection` and filling in
+     `localhost` and the port that was printed out when the repl started.
+
+  9. Once the REPL finishes refreshing, try evaluating:
+
+  ```
+  (+ 1 1)
+  ```
+
+  10. In another terminal window, run the "lein test-refresh" command at
+      the root of the project and make sure that the autograder runs.
+
+  11. Unless this is Asgn 4, skip down to the assignment spec and read
+      the rest of this README very carefully.
 
 
+## Installation for Asgn 4
 
-# Questions
-1. Do you eat on campus for lunch?  If so, where?
-2. How do you usually choose your campus dining location for lunch?
-3 .Do you feel that long wait times hinder your ability to make it to get lunch between classes, especially Tuesday/Thursday (where the gap between classes is shorter)?  How do you usually overcome this hurdle?
-4. If you knew a dining location you do not usually frequent had a very short waiting time, would you be inclined to go there?  Why/why not?
-5. Would you be interested in a service that suggested where you should eat, based on waiting times on campus?
-6. Would you be willing to report to the program how long you waited for food on campus?
-7. Do you think that Vanderbilt students would be interested in a service such as this?  Why/why not?
-8. Do you trust that other people partaking in this service would accurately report their waiting time data?
-9. What information about dining locations during the lunch rush would you want to receive, if you could choose?
-10. What would be an acceptable margin of error for such a service? (ex, the texting service says wait will be 10 minutes and wait is actually 15 - is this acceptable? What is the acceptable error?)
+You must create a Twilio account to send / receive SMS. To do this, follow
+these steps:
 
-# Answers
+0. Merge the asgn4 branch into your current branch
+1. Install the Serverless framework and all dependencies (NodeJs, etc.): https://serverless.com/framework/docs/providers/aws/guide/installation/
+2. Verify that the "sls" command is on your path and add it if it is not
+3. Run the command "lein deps" at the root of your project
+4. Create a Twilio account and enable 2-factor auth
+5. You will need to fund the account with $20
 
-## Question 1: 
-  1. I usually eat at Rand. I get a Randwich: salami and American cheese on a pretzel roll, with tomato, sweet peppers, carrot, and a little bit of mayo. I get yogurt, a pear, and chocolate milk as sides.
-  2. Yes, usually Rand.
-  3. Yes. EBI TR/Rand MWF
+   When you setup billing:
 
-## Question 2:
-  1. My options are limited by the ~45 minute window I have for lunch. I pretty much only ever get Rand because of the time pressure.
-  2. Food variety and how long it takes
-  3. Proximity to last class/next class, quality
-  
-## Question 3:
-  1. Wait times are the bane of my lunchtime experience. I usually suck it up and wait in line, but I make myself feel better by complaining to my friends.
-  2. Yes, I’ve been late to class several times. I normally go to get lunch in the last 20 minutes of the dining
-period for shorter lines and eat quickly outside of my classroom
-  3. Not as much because I eat fast
-  
-## Question 4:
-  1. Absolutely. I will eat anything, and shorter wait times are a much bigger priority for me than food taste or quality.
-  2. Yes, if the walk is reasonable! 
-  3. Yes, if the quality is up to par and it is at a convenient location
-  
-## Question 5:
-  1. Yes. This sounds like a great idea.
-  2. Yes
-  3. Yes, especially if these times were accurate
-  
-## Question 6: 
-  1. Not every day, but for an initial trial period I would consider it.
-  2. Yes
-  3. Absolutely
-  
-## Question 7:
-  1. I think they would be interested, especially because every complains so much about the incredible lines at lunchtime
-  2. Yes, I think a lot of students face this problem.
-  3. Yes, there are a decent number of places to eat and many times the wait time can play a significant role in the decision-making process. 
-  
-## Question 8: 
-  1. Yes. I don't think they would have a reason to lie, and obvious trolls would probably be easy to spot.
-  2. Yes
-  3. There shouldn't be any reason to under-report wait times. They might be slightly over-reported, but in this case that is preferable and once acknowledged, won't matter much. 
-  
-## Question 9:
-  1. Wait time and food options (especially for places that have a rotation or new food options each day).
-  2. Just wait times would be fine!
-  3. Just average time to be served since joining the line
-  
-## Question 10:
-  1. I would be okay with a normal 5 minute discrepancy. A 10 minute discrepancy would be acceptable if it was rare. 
-  2. I think within 10 minutes of the estimated time is acceptable.
-  3. <5 min
-  
-# Requirements
-The entirety of the service, and hence its utility to students and others who often get food on campus, depends on:
-  1. The reactivity of the service, i.e. how quickly it responds to user queries or reports on wait times
-  2. The accuracy of the wait times given to students by the service
-These two items therefore make up the two most important requirements that must be considered as the process is being designed, implemented, and maintained. 
+   ```
+   WARNING: DO NOT ENABLE AUTO-RECHARGE ON YOUR ACCOUNT
 
-Because the service will be run through a combination of Twilio / AWS, which are generally reliable, this requirement should be fulfilled automatically provided that the implementation of the service's logic is not faulty, which will be one of the goals of the design process. 
+            DO NOT ENABLE AUTO-RECHARGE ON YOUR ACCOUNT
 
-The other major requirement is not so easily fulfilled and can be stated more accurately as two separate requirements:
-  1. There is a simple protocol made known to all users for how to report times (e.g. report the time you waited in line as soon as you receive your food, not when you check out)
-  2. Incoming reports from users for various dining locations are processed in a sensible way that will give incoming students a good estimate on the various wait times. 
-  
-The only other outstanding requirement which has not been covered is that the wait time information held by the service is delivered to users (upon request) in a form that will be useful for them in deciding on where they would like to eat. This requirement effectively consists of the user's ability to see the top locations with the shortest waiting time, with the option to remove (or re-add) certain dining locations from appearing so that they can tailor their results to their liking.
+            IF YOU DO, BAD THINGS CAN HAPPEN
 
-Therefore the main requirements of the service are:
-  1. The service responds and processes incoming reports quickly
-  2. The service communicates a uniform protocol for reporting wait times to users.
-  3. The service processes incoming reports intelligently to provide as accurate of a wait time as possible to users.
-  4. The service displays the locations with the shortest lines to users upon request
-  5. The service allows users to customize their results by omitting certain locations (which can later be re-added)
+            YOU HAVE BEEN WARNED
+   ```
 
-# Development Process
-The area of greatest risk for this service likely lies in some combination of acquiring a large enough userbase that new wait times can consistently be reported and whether users would accurately report or remember to report their wait times. An inquiry into this risk can be seen in Question 8. While students believe that their fellow students who use the service would report accurately, the necessity of acquiring a large userbase still exists (of course, other methods for acquiring wait times exist, such as using a camera system to estimate how many people are at a dining location; however, these methods were deemed infeasible). 
+   IMPORTANT:
+   -----------
+   At the end of the class, you should go and release this phone number and
+   cancel your Twilio account if you are no longer going to use it.
 
-The only way to mitigate the above risk would be to poll a large audience to acquire a sizeable userbase, which will be done.
+6. Go to Twilio and buy an SMS-enabled phone number with a 615 area code
+   and write down the number.
+7. Go to Twilio settings and write down your live and test credentials
+8. Run the command "lein deps" in this project
+9. Create secure secrets for your Twilio credentials in AWS, by running these
+   commands (fill-in <...>):
 
-Reviewing the requirements, the second greatest risk is 4/5: an acceptable way to display wait times is very subjective, and it may be difficult to know whether the chosen way to display results will appease all users. Hence the first step of the development process will be to create mock-up texts of what the results may actually look like and show a broader audience than those interviewed (as well as including those interviewed) to determine if they would use this service if they received results like these combined with the possibility of filtering certain locations they did not like.
+```
+sls secrets set --name twilio-prod-account-sid --text <your live sid> --region us-east-1
+sls secrets set --name twilio-prod-token --text <your live token> --region us-east-1
+sls secrets set --name twilio-test-account-sid --text <your test sid> --region us-east-1
+sls secrets set --name twilio-test-token --text <your test token> --region us-east-1
+```
 
-Based on the interviews it would seem that such a design as described in the requirements would be acceptable, and hopefully the broader audience would accept this. Otherwise requirement 5 would have to be revised. Changes could be gathered from the audience, filtered for what would be technically feasible (e.g. the first interviewee in question 9 requested displaying changing menus, which was determined to be infeasible), and the above could be repeated. This would quickly converge to an acceptable front-end for the users. Assuming a large enough group of people was asked, this step could be completed in two days.
+10. Verify that you did everything correctly by running this command
+    in the root of the project:
 
-It will remain to create the back-end for this system. This will include much less risk, as there will be an accepted front-end and the back-end need only implement it. In order to further mititgate risk, the spiral model can be used. Of the remaining requirements, the one with the greatest risk is 1, as incorrectly designing the architecture of the program may cause it to crash, denying the service to all users. The base of the service will be very similar to what was done for assignment 3/4. A prototype will be built off of the code for assignment 3/4 which allows users to text the service the wait time for a location or receive the shortest waiting times. For the prototype user reports on wait times will simply overwrite the current entry for the wait time for a given establishment. While this is not necessarily an accurate estimate of the wait time, it will allow for an easy way to test the prototype within a group of test users. Ideally this will allow any architectural bugs to be identified and eliminated. Assuming the initial prototype functions correctly, two days of testing should be sufficient. Any bugs would require an additional day of testing, but no more testing should be necessary as the initial architecture will be thought about thoroughly.
+```
+sls secrets validate
+```
 
-Once the prototype above works properly, a better way to determine wait times based off of the most recent user reports can be designed, plugged into the working prototype and tested with the test group to ensure that it provides accurate wait times. If not, it can be revised. This should require at most two days of testing.
+You should see output that looks like this:
 
-Once all of the above is working, the final version of the service can be created, with requirement 2 being satisfied by sending every new user who signs up an initial text specifying the protocol used to report times (this protocol will be determined in the above step).
+```
+Serverless: Targeting /..../asgnX/.serverless/asgnx.zip
+Serverless: Generating Serverless Secrets Config
+Serverless: Validating secrets
+Serverless: Secrets validated
+```
 
-At this point, the service should satisfy all requirements and have been thoroughly tested.
+11. To learn more about serverless secrets management, see: https://github.com/trek10inc/serverless-secrets
+
+12. Run "sls deploy" in the root directory and you should see something like this:
+
+```
+Serverless: Targeting /.../asgnX/.serverless/asgnx.zip
+Serverless: Generating Serverless Secrets Config
+Serverless: Serverless Secrets beginning packaging process
+Serverless: Writing .serverless-secrets.json
+Serverless: Validating secrets
+Serverless: Secrets validated
+Serverless: Adding environment variable placeholders for Serverless Secrets
+Serverless: Packaging service...
+Serverless: Executing "lein update-in :cljs-lambda assoc :functions '[{:name "asgnx-dev-handle-msg" :invoke asgnx.lambda/receive-message}]' -- cljs-lambda build :output /.../asgnX/.serverless/asgnx.zip :quiet"
+Serverless: Returning artifact path /.../asgnX/.serverless/asgnx.zip
+Serverless: Cleaning up .serverless-secrets.json
+Serverless: Uploading CloudFormation file to S3...
+Serverless: Uploading artifacts...
+Serverless: Validating template...
+Serverless: Updating Stack...
+Serverless: Checking Stack update progress...
+..............
+Serverless: Stack update finished...
+Service Information
+service: asgnx
+stage: dev
+region: us-east-1
+stack: asgnx-dev
+api keys:
+  None
+endpoints:
+  GET - https://abcxyz.execute-api.us-east-1.amazonaws.com/dev/msg
+  POST - https://defxyz.execute-api.us-east-1.amazonaws.com/dev/msg
+functions:
+  handle-msg: asgnx-dev-handle-msg
+Serverless: Removing old service versions...
+```
+
+13. Copy the endpoint URL for POST
+14. Create a "deploy.edn" file in the root folder of the project
+15. Insert a raw Clojure map in the file with keys for your endpoint and
+    phone number like this (replace these dummy values with yours!):
+
+```
+{:endpoint "https://abcxyz.execute-api.us-east-1.amazonaws.com/dev/msg"
+ :phone-number "+1615xxxxxxx"}
+```
+
+16. Run the autograder with "lein test-refresh" and hope for this:
+
+```
+================================================
+               Estimated Score:
+================================================
+
+|             :test | :score | :out-of |
+|-------------------+--------+---------|
+|   asgnx.core-test |   10.0 |      10 |
+| asgnx.deploy-test |   90.0 |      90 |
+
+Total:  100.00 / 100
+================================================
+Score submitted.
+
+Your actual score is calculated on the server and
+may be different than this score in some circumstances.
+The server score is considered the definitive score.
+
+Passed all tests
+
+```
+
+## Assignment Spec
+
+These assignments are going to build the basis for a simple text messaging application
+to aid students in this course. In Assignment 4, we will deploy this application to
+Amazon Web Services and configure an inbound number for receiving text messages. At
+this point, you are only building out basic functions that will later be used to
+respond to text messages.
+
+All assignments are graded on the basis of passing ALL of the tests for every prior
+assignment in addition to any new tests. If you break something that you did in a
+prior assignment (e.g., you have a regression), you will lose points. If you don't
+finish an assignment, you will need to complete it in order to get full credit
+for all subsequent assignments (real-world software development is built on accretion
+over time).
+
+**No solutions will be released until after Asgn 3.**
+
+If you do not complete an assignment or fail to get it to work completely, it
+is imperative that you ask questions and seek help.
+
+### Asgn 1
+
+Open `src/asgnx/core.cljc` in Atom and look for `Todo:` comments that are for
+Asgn 1. Complete all of the todos for the current assignment and leave the
+autograder running as you make changes to your code to see your score (see "To run the autograder" below).
+
+### Asgn 2
+
+Open `src/asgnx/core.cljc` in Atom and look for `Todo:`. Complete all of the todos
+for the current assignment and leave the autograder running as you edit to see your
+score (see "To run the autograder" below). In Asgn 2, you will also need to complete
+the `Todo:`s in `src/asgnx/kvstore.cljc`.
+
+### Asgn 3
+
+Starting in Assignment 3, you are going to extend your previous implementation to add
+functionality that allows people to pose questions to people that are registered
+as an expert on a given topic. You are still responsible for all of the original
+functionality (e.g., those tests still have to pass, no regressions allowed) and
+the new functionality. Your grade is calculated from all tests from the past
+assignments AND all the tests from the new assignment.
+
+#### Structure of the Stored State
+
+The application persists state between executions in a key / value store, which you
+can think of as a map that persists to disk. You can insert/update this map with the actions
+:assoc-in and :dissoc-in. 
+
+For example, the action:
+
+```clojure
+{:action :assoc-in :ks [:cooks "bob"] :v {:job "chef"}} 
+```
+
+This would update the stored state to conceptually look like this:
+
+```clojure
+{:cooks {"bob" {:job "chef"}}}
+```
+
+Another insert would further update the stored state:
+
+```clojure
+{:action :assoc-in :ks [:cooks "john"] :v {:job "line chef"}} 
+```
+
+resulting in the following stored state:
+
+
+```clojure
+{:cooks {"bob"  {:job "chef"}
+         "john" {:job "line chef"}}}
+```
+
+The state for the SMS experts / ask functionality is stored using a structure
+that looks like this:
+
+```clojure
+{:expert {
+      "parking" {
+                 "+15555555555"  {:whatever :data}
+                 "+15557777777"  {:whatever :data :about :expert}
+                 }
+       "food"    {
+                 "+15551212121"  {:whatever :data :about :expert}
+                 }
+          }
+                 
+ :conversations {
+          "+15555555555" {:last-question "where to park?" :asker "+15554443210"}
+          "+15557777777" {:last-question "where to park?" :asker "+15554443210"}
+ }}
+```
+
+The `:expert` section of the data uses keys that are the "topics" and the maps
+beneath the topics store the `user-id`s (phone numbers) of the experts on that
+topic. The data associated with the expert (the `info` parameter) is arbitrary
+and up to you -- it can even be an empty map for this assignment. 
+
+If you wanted to update the list of experts, you might want to use your `action-insert`
+function from prior work.
+
+The `:conversations` store information about the last question that was sent to
+an expert and who asked it. You decide the structure of the values that are mapped
+to the expert `user-id`s, but one suggested format is provided above. The most
+important part for whatever structure that you choose is that you store the phone
+number of the user that asked the last question sent to each expert. This information
+allows answers sent by an expert to be sent back to the original question asker.  
+
+If you wanted to update the list of conversations, you might want to use your `action-insert`
+function from prior work.
+
+#### Queries
+
+Each command is mapped to a query that retrieves data for it before its associated handler 
+function is invoked. The queries have been provided for you and are excerpted below:
+
+```clojure
+;; Don't edit!
+(defn experts-on-topic-query [state-mgr pmsg]
+  (let [[topic]  (:args pmsg)]
+    (list! state-mgr [:expert topic])))
+
+
+;; Don't edit!
+(defn conversations-for-user-query [state-mgr pmsg]
+  (let [user-id (:user-id pmsg)]
+    (get! state-mgr [:conversations user-id])))
+
+
+;; Don't edit!
+(def queries
+  {"expert" experts-on-topic-query
+   "ask"    experts-on-topic-query
+   "answer" conversations-for-user-query})
+```
+
+This code means that text messages with the "expert" command, such as "expert food", will
+be routed to the `experts-on-topic-query`. This query will then look up the list of keys
+in the stored state that are beneath `[:expert "food"]`. The keys will be what your 
+`state-keys` function returns, which will be a list of strings containing the `user-ids`
+of the experts mapped to that topic. The data from this query, which is the list of experts
+on the topic will then be passed to your `add-expert` and `ask-experts` functions in the
+`experts` parameter. All you need to do is to make sure that you insert experts into the
+stored state under the appropriate keys for the topics that they register for and the queries
+will take care of loading the data for your `add-expert` and `ask-experts` functions.
+
+Similarly, the `conversations-for-user-query` loads the saved state that is needed to 
+process "answer park in 24th ave garage" style responses from the experts. The query looks
+up the information about the last question sent to the answering expert and who asked it. The
+resulting data is then passed in as the `conversation` parameter in `answer-question`. The
+format of the conversation data is up to you but should include the information about the 
+`user-id` of the person that asked each expert their most recent question. Experts can
+answer their most recently asked question.
+
+
+#### Common Pitfalls
+
+A common error is returning a result from your handler function that is not in the
+right format. Your handler function must return a list with this format:
+
+```
+[ [..actions...] "output to text message sender" ]
+```
+
+The actions are the results of calling your various action-insert, action-send-msg,
+etc. functions from past assignments. 
+
+You must ensure that the `[...actions...]` are a single list of actions. This
+is an example of a possible return from a handler function:
+
+```
+[ [{:action :assoc-in :ks [:expert "foo"] {:last-asker "+15555555555"}}
+   {:action :assoc-in :ks [:expert "bob"] {:last-asker "+15555555555"}}]
+   "Your question was sent."  ]
+```
+
+If you do not use this format, you will fail the tests and see error messages
+like "expected: the blue bus" and "actual: what burger". If you have implemented
+a bunch of action :assoc-in and are wondering why they aren't working, there is a
+good chance they are being returned in the wrong format.
+
+Be careful of returning results in the following formats:
+
+```
+No list wrapping the actions:
+[  {:action :assoc-in :ks [:expert "foo"] {:last-asker "+15555555555"}}
+   "Your question was sent."  ]
+
+Nested lists in the actions:
+[  [[{:action :assoc-in :ks [:expert "foo"] {:last-asker "+15555555555"}}]
+    [{:action :assoc-in :ks [:expert "bob"] {:last-asker "+15555555555"}}]] 
+   "Your question was sent."  ]
+
+No single list of actions:
+[  {:action :assoc-in :ks [:expert "foo"] {:last-asker "+15555555555"}}
+   {:action :assoc-in :ks [:expert "bob"] {:last-asker "+15555555555"}} 
+   "Your question was sent."  ]
+```
+
+#### Sending Text Messages
+
+Use your `action-send-msg` and `action-send-msgs` functions to send text messages to
+someone other than the person that sent the current command.
+
+#### Parameters to Functions
+
+You may not have to use every parameter in every function. 
+
+#### What is `info`
+
+You can make info anything that you want.
+
+#### What is `conversation`
+
+See Queries.
+
+#### What is `experts`
+
+See Queries.
+
+
+### Asgn 4
+
+This assignment tests your ability to configure and deploy a cloud application
+built on Twilio, AWS Lambda, AWS S3, and AWS SSM. Complete the deployment using
+the steps above and get the asgnx.deploy-test to pass.
+
+Once you have successfully deployed the application and passed the tests, you
+can make changes and redeploy it to AWS by editing the source files and then
+running "sls deploy". The build tools will automatically, compile, package,
+and upload your code to AWS. The tools will also provision the AWS resources
+listed in serverless.yml.
+
+Finally, you should setup your Twilio phone number to delegate SMS to your
+Lambda function. To do this, go into Twilio, find your active phone numbers,
+select the number, and then set the "A MESSAGE COMES IN" webhook to the
+POST endpoint you copied earlier. Make sure "HTTP POST" is listed as the
+method after your endpoint.
+
+Finally, submit the "Asgn 4 SMS Integration" quiz on Brightspace so that the
+TA can test your SMS integration. Your final score is not produced via autograding
+for this piece of the assignment. Your final score is based on the autograding
+and verification that your SMS number is working and the integration is
+complete.
+
+
+## Running the Application CLI
+
+The application has been modified to provide a command line interface so that you
+can send fake text messages to the system to see how it will respond.
+
+You can invoke the `-main` function from a terminal by running:
+
+```
+lein run
+```
+
+You should then see the `CSx278` prompt:
+
+```
+CSx278:
+```
+
+Once you are DONE with Asgn 1, you should be able to type any of the following commands and
+see the output:
+
+```
+office <monday,tuesday,wednesday,thursday,friday,saturday,sunday>
+homepage
+welcome <name>
+quit
+
+;; After Asgn 3
+expert <expert-id> <topic> <expert-info>
+ask <topic> <question>
+answer <answer>
+```
+
+Here is a sample session with a working version of the app:
+
+```clojure
+CSx278: homepage
+=========================================
+  Processing:" homepage " from console_user
+  Router: #object[asgnx.core$create_router$fn__13198 0x65031f2 asgnx.core$create_router$fn__13198@65031f2]
+  Parsed msg: {:cmd homepage, :args (), :user-id console_user}
+  Read state: {}
+  Hdlr: #object[asgnx.core$stateless$fn__13140 0x6dad3964 asgnx.core$stateless$fn__13140@6dad3964]
+  Hdlr result: [[] https://brightspace.vanderbilt.edu/d2l/home/85892]
+  Processing actions: []
+  Action results: []
+=========================================
+out =>  https://brightspace.vanderbilt.edu/d2l/home/85892
+CSx278: welcome bob
+=========================================
+  Processing:" welcome bob " from console_user
+  Router: #object[asgnx.core$create_router$fn__13198 0x65036760 asgnx.core$create_router$fn__13198@65036760]
+  Parsed msg: {:cmd welcome, :args (bob), :user-id console_user}
+  Read state: {}
+  Hdlr: #object[asgnx.core$stateless$fn__13140 0x19814318 asgnx.core$stateless$fn__13140@19814318]
+  Hdlr result: [[] Welcome bob]
+  Processing actions: []
+  Action results: []
+=========================================
+out =>  Welcome bob
+CSx278: quit
+nil
+```
+The "CSx278:" is the prompt for you to type a command. The "out =>" is the final output
+that was produced. Everything between "=================" is debugging messages that have been added
+to help you find errors. You should look at how these messages are printed out and
+use the same types of techniques in your own code when you can't figure out why
+something isn't working. For now, "println" is your friend. We will use a more
+sophisticated logger in later work.
+
+
+### Running a REPL:
+
+It is extremely useful to create a REPL and connect it to from Atom. This project is preconfigured
+with the dependencies needed to connect to your editor.
+To start a REPL and evaluate code:
+
+```
+lein repl
+```
+
+You should see something like this printed out:
+
+```
+nREPL server started on port 54404 on host 127.0.0.1 - nrepl://127.0.0.1:54404
+REPL-y 0.3.7, nREPL 0.2.13
+Clojure 1.9.0
+Java HotSpot(TM) 64-Bit Server VM 1.8.0_131-b11
+    Docs: (doc function-name-here)
+          (find-doc "part-of-name-here")
+  Source: (source function-name-here)
+ Javadoc: (javadoc java-object-or-class-here)
+    Exit: Control+D or (exit) or (quit)
+ Results: Stored in vars *1, *2, *3, an exception in *e
+```
+
+Once you see this message, open the `src/asgnx/core.clj` file and run the
+command `Proto Repl: Remote Nrepl Connection` and filling in `localhost` and
+the port that was printed out when the repl started. On Mac, the keymap you were
+provided bound this command to "cmd + r". On Windows, it should be bound to
+"ctrl + r". You can also invoke it through the command palette with "cmd + m" on
+Mac or "ctrl + m" on Windows.  
+
+Leave the REPL running. You do not need to terminate it. If you never close your
+REPL, you can connect to it over and over instantly in Atom. If you close your
+REPL in the terminal by killing the "lein repl" command, you will have to restart
+it each time and it will take longer.
+
+Once connected, you should see a new pane open and then eventually "Refresh complete".
+At this point, you can evaluate code in one of three ways:
+
+1. You can type code into the new window and then hit "shift + enter"
+2. You can place your cursor after a line of code in a Clojure file and use either
+  "cmd + enter" on Mac or "ctrl + enter" on Windows to evaluate the preceding
+  line. The evaluation results will be shown inline next to the cursor. Any
+  printlns will show up in the REPL window.
+3. You can use Protorepl's "Proto Repl: Autoeval File" to continuously execute
+   every statement in a file as you type.
+
+The general workflow to experiment with some code is:
+
+1. Open the file to experiment with
+2. Use the "Proto Repl: Load Current File" command to evaluate it, which
+   is "cmd + l" on Mac and "ctrl + c" on Windows.
+3. Type in code and execute it with "cmd + enter" or "ctrl + enter"
+
+## Reading Tests as Specs
+
+The tests in this application serve as a more detailed specification of what you
+need to do than the textual descriptions in the comments. It is essential that you
+learn to read tests (and later write them). A basic Clojure test has the form:
+
+```clojure
+(deftest something-test
+  (testing "a message describing the point of the test")
+    (is something-that-should-be-true)
+    (is something-else-that-should-be-true)
+    (is another-thing-that-should-be-true)
+```
+
+The basic convention is that tests for the Clojure source file src/foo/xyz.clj
+will be contained in a test test/foo/xyz_test.clj. For example, the tests for
+src/asgnx/core.cljc are contained in test/asgnx/core_test.clj. You can use this
+naming convention when looking for the tests for a bit of code.
+
+For each part of an assignment, you need to find the tests that correspond to
+the functions you are working on. Each `is` statement in a test describes
+an expected outcome of executing your code. You should read through each `is`
+and incrementally read and understand them. After digesting each `is`, update
+your code to try and make sure that the statement passes when the autograder
+is run.
+
+For example, for Asgn 1, the very first test is the `words-test`:
+
+```clojure
+(deftest words-test
+  (testing "that sentences can be split into their constituent words"
+    (is (= ["a" "b" "c"] (words "a b c")))
+    (is (= [] (words "   ")))
+    (is (= [] (words nil)))
+    (is (= ["a"] (words "a")))
+    (is (= ["a"] (words "a ")))
+    (is (= ["a" "b"] (words "a b")))))
+```
+
+The first `is` statement checks that invoking `(words "a b c")` produces the
+output ["a" "b" "c"]. If your code does not produce the expected output, the
+test will fail and tell you that the `expected` output was `["a" "b" "c"]` and
+that your `actual` output was something else. Each test is a specification for
+something that your code has to do in order to receive full credit.
+
+You must read and understand every test. If you are having trouble passing a
+test, start a REPL and connect it to your code. Then, copy the part of the
+test to the right of the `is` statement and evaluate it (you may need to load
+your code and some namespaces). Play around with your code in the REPL until
+you can pass the test.
+
+## Running Tests & Grading
+
+The project includes an automated grading system (an autograder) that will test your
+code, print your estimated score, and submit the score/code to the instructor. The
+grading/submission process is designed to be continuous. You should start the autograder
+and leave it running. Each time you make a change to a file, the autograder will be run
+and the updated code submitted. You will receive credit for your highest score, even
+if you break something and your score goes down -- so make sure and leave the autograder
+running!
+
+Most of the time, you want to leave the autograder running. It will automatically execute and
+grade all of your code every time that you make a change and show you the output in the terminal.
+You can certainly interactively test with a REPL to see what specific lines of code do or aid
+in debugging, but the autograder should also be run separately to continuously test how your
+code performs.
+
+  1. Open a terminal (or Git Bash Shell) and change to the root of the project
+  2. Run `lein test-refresh`
+  3. If this is the first time you have run the autograder, it will ask you to login
+     using the credentials that you created in Step 5 of the installation instructions.
+  4. After logging in successfully, you should see "authenticated as" printed with
+     your name / info.
+  5. The auto grader will test your code, estimate your score, and submit it to the server.
+  6. LEAVE THE AUTOGRADER RUNNING! Late submissions will never be accepted since there is
+     no reason not to run the autograder continuously.
+  7. After each change you save, you will get feedback on your code to see how your score is
+     progressing. You will also not have to worry about forgetting to turn your code in since
+     it will happen automatically each time.
+
+  A successful run of the autograder will look like this:
+
+```
+*********************************************
+*************** Running tests ***************
+:reloading (autograder.reporter)
+WARNING: name already refers to: #'clojure.core/name in namespace: autograder.reporter, being replaced by: #'autograder.reporter/name
+Authenticated as: {:sub ...., :email_verified true, :name ..., :email ..., :username ....}
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+
+==================================================
+             Grading Your Solution
+=================================================
+Name:  ....
+Testing  #'asgnx.core-test/create-router-test
+Testing  #'asgnx.core-test/office-hours-for-day-test
+Testing  #'asgnx.core-test/formatted-hours-test
+Testing  #'asgnx.core-test/cmd-test
+Testing  #'asgnx.core-test/handle-message-test
+Testing  #'asgnx.core-test/args-test
+Testing  #'asgnx.core-test/parsed-msg-test
+Testing  #'asgnx.core-test/words-test
+================================================
+               Estimated Score:
+================================================
+
+|           :test | :score | :out-of |
+|-----------------+--------+---------|
+| asgnx.core-test |  100.0 |     100 |
+
+Total:  100.00 / 100
+================================================
+Score submitted.
+
+Your actual score is calculated on the server and
+may be different than this score in some circumstances.
+The server score is considered the definitive score.
+
+Passed all tests
+Finished at 12:53:08.788 (run time: 3.386s)
+
+```
+
+## The Definitive Score
+
+After each successful submission, you will see this message:
+
+```
+Score submitted.
+
+Your actual score is calculated on the server and
+may be different than this score in some circumstances.
+The server score is considered the definitive score.
+```
+
+Why doesn't the printed score count? Your code changes are all sent to the server
+and your actual code is compiled and run against the tests. There are a number of
+cases where the code may score higher on your machine than on the server, such as:
+1) code that is hardcoded to assumptions on your machine (e.g., it worked on my
+machine!); 2) test cases that are accidentally or maliciously changed locally
+causing an inflated score; 3) strange compilation / runtime errors that lead to
+tests passing when they should not. In all cases, the server-produced score is what
+will be used.
+
+
+## Errors
+
+You may see these types of errors when your code is tested:
+
+  1. Errors - indicate assertions in the tests that are not passing (e.g., implementation issues
+     in your code that prevent it from meeting the assignment spec).
+
+     Errors will look like this:
+
+     ```
+     Testing  #'asgn1.core-test/foo-test
+
+     ERROR in (foo-test) (core_test.clj:41)
+     @Step4
+     expected: 1
+       actual: (0)
+     ```
+
+     The expected value is the correct output. The actual value is what your
+     code actually produced as output. If you are confused about a failure, you should
+     look at the source file and line number in the `test` folder (e.g., `test/asgn1/core_test.clj`
+     line 41 in the foo-test function).
+
+  2. Failures - indicate that your code is throwing unexpected exceptions.
+
+     Failures will look like this:
+
+```
+FAIL in (foo-test) (Numbers.java:163)
+@Step4
+
+expected: (= 0 (foo [5 6 1 0]))
+  actual: #<java.lang.ArithmeticException@62a153d3 java.lang.ArithmeticException: Divide by zero>
+
+                                     clojure.main.main         main.java:   37
+                                                   ...                        
+                                     clojure.main/main          main.clj:  387
+                                     clojure.main/main          main.clj:  424
+                                 clojure.main/null-opt          main.clj:  345
+                               clojure.main/initialize          main.clj:  311
+                                 clojure.main/init-opt          main.clj:  280
+                              clojure.main/load-script          main.clj:  278
+                                                   ...                        
+                                         user/eval4881         REPL Input     
+          com.jakemccrary.test-refresh/monitor-project  test_refresh.clj:  255
+       com.jakemccrary.test-refresh/monitor-project/fn  test_refresh.clj:  270
+                com.jakemccrary.test-refresh/run-tests  test_refresh.clj:  177
+       com.jakemccrary.test-refresh/run-selected-tests  test_refresh.clj:  162
+com.jakemccrary.test-refresh/suppress-unselected-tests  test_refresh.clj:  125
+    com.jakemccrary.test-refresh/run-selected-tests/fn  test_refresh.clj:  164
+                                    clojure.core/apply          core.clj:  657
+                                                   ...                        
+                                clojure.test/run-tests          test.clj:  767 (repeats 2 times)
+                                    clojure.core/apply          core.clj:  659
+                                                   ...                        
+                                   clojure.core/map/fn          core.clj: 2747
+                                  clojure.test/test-ns          test.clj:  757
+                            clojure.test/test-all-vars          test.clj:  736
+                                clojure.test/test-vars          test.clj:  730
+                          clojure.test/default-fixture          test.clj:  686
+                             clojure.test/test-vars/fn          test.clj:  734
+                          clojure.test/default-fixture          test.clj:  686
+                          clojure.test/test-vars/fn/fn          test.clj:  734
+                                 clojure.test/test-var          test.clj:  716
+                              clojure.test/test-var/fn          test.clj:  716
+                                    asgn1.core-test/fn     core_test.clj:   41
+                                        asgn1.core/foo          core.clj:   40
+                                                   ...                        
+java.lang.ArithmeticException: Divide by zero
+```
+
+A special printer is used to print failures in reverse order of normal stack traces.
+The last and probably most relevant line will be at the bottom. If the last line is not
+in your code, you should walk sequentially up the list of files/line numbers until you
+find code that you wrote. You should start debugging from there. The left column shows
+the function that was executing, the middle column shows the file name, and the right
+column is the line number.
+
+In this case, the code on line 40 of src/asgn1/core.clj thre a "Divide by zero" exception.
+
+
+  3. Grading / Submission Errors - your code could not be submitted to the autograding server --
+     email the instructor the error message and ensure that you have an Internet connection
+
+     If you don't have an Internet connection, connect to the Internet and try again. You do
+     not need to email the instructor in this case.
+
+     A grading / submission error should be rare. Most of the time, these errors will be caused
+     when there is not an Internet connection. These types of grading / submission errors will
+     be followed by this message:
+
+```
+===========================================
+               WARNING                     
+Unable to submit the assignment for grading.
+
+Please save the ENTIRE expcetion stack
+trace above and include it in any emails
+to the instructor.
+===========================================
+```
+
+  4. Compilation Errors - code that doesn't compile gets zero credit
+
+     Compilation errors will look like this:
+
+```
+    :error-while-loading asgn1.core
+
+    Error refreshing environment: java.lang.RuntimeException: Map literal must contain an even number of forms, compiling:(asgn1/core.clj:40:14)
+    Finished at 12:40:26.351 (run time: 0.142s)     
+```
+
+You should go to the file / line number specified (e.g., src/asgn1/core.clj line 40) and fix
+the compilation error. No tests will be run and you will get a zero if your code can't be
+compiled.
+
+
+### Bugs
+
+Please let the instructor know ASAP if you encounter assignment or autograder bugs.
+
+### Reading
+
+You should read and understand all of the course reading material that is due before
+the assignment due date. In particular, you need to understand:
+
+  Clojure for the Brave and True Through Chapter 3: https://www.braveclojure.com/
+
+Note: The Emacs installation instructions in Clojure for the B&T are not being used. Use the
+      leiningen instructions in "Launching a basic Repl".
+
+## Protorepl Keyboard Shortcuts
+
+Mac:
+```
+cmd + enter = Execute the block of code in front of the cursor
+cmd + r     = Connect to a remote REPL
+cmd + l     = Load the current file into the REPL
+cmd + m     = Open the Atom command palette which can be used to run any  
+              command
+cmd + p     = Open a file in the current project
+cmd + o     = Open a file
+```
+
+Windows:
+```
+ctrl + enter = Execute the block of code in front of the cursor
+ctrl + r     = Connect to a remote REPL
+ctrl + l     = Load the current file into the REPL
+ctrl + m     = Open the Atom command palette which can be used to run any  
+              command
+ctrl + p     = Open a file in the current project
+ctrl + o     = Open a file
+```
+
+The typical usage to connect to a REPL would be:
+
+1. Open a Clojure file
+2. Make sure you have launched a REPL for the current project in the terminal
+3. cmd + r (fill in the info to connect to the repl)
+4. cmd + l (load the current file so every function is available)
+5. cmd + enter (after some form you want to evaluate / play with)
+
+
+## Common Exceptions and What they Mean
+
+### Unable to resolve symbol
+
+If you attempt to refer to something that hasn't been defined, such as a method
+or variable that doesn't exist, you will get an error like this:
+
+```clojure
+java.lang.RuntimeException: Unable to resolve symbol: foo in this context
+clojure.lang.Compiler$CompilerException: java.lang.RuntimeException: Unable to resolve symbol: foo in this context, compiling:(/Users/jules/Dev/workspaces/vandy/CS4278-2018-Asgns/asgnX/src/asgnx/core.cljc:1:1)
+```
+
+Look at the "Unable to resolve symbol: foo" and figure out what "foo" you are
+refering to that hasn't been defined.
+
+Another common reason for these errors is that you are trying to use a function in
+another namespace that hasn't been required correctly.
+
+### cannot be cast to clojure.lang.Ifn
+A common error is attempting to invoke a function like this:
+
+```clojure
+(foo a b)
+```
+
+Where `foo` is not a function. For example, this code:
+
+```clojure
+(3 1 2)
+```
+
+The number `3` is not a function and cannot be invoked. This will produce an
+error message that looks like:
+
+```clojure
+java.lang.ClassCastException: java.lang.Long cannot be cast to clojure.lang.IFn
+```
+
+The error message will vary based on the "type" of the thing that you try to
+invoke as a function. For example, trying to invoke a string as a function will
+produce:
+
+```clojure
+java.lang.ClassCastException: java.lang.String cannot be cast to clojure.lang.IFn
+```
+
+
+## License
+
+Copyright © 2018 Jules White
+
+Distributed under the Eclipse Public License either version 1.0 or (at
+your option) any later version.
