@@ -6,7 +6,7 @@
 
 (def help-message
   "WELCOME to the Vandy Dining Scheduler App. There are three different commands you can enter:
-1) help: display this help message
+1) assist: display this help message
 2) <dining location>: get the wait time for this dining location
 3) <dining location> <time>: report a wait time for a dining location")
 
@@ -402,6 +402,9 @@
   (let [user-id (:user-id pmsg)]
     (get! state-mgr [:conversations user-id])))
 
+(defn times-query [state-mgr pmsg]
+  (let [location (:cmd pmsg)]
+    (get! state-mgr [:locations location])))
 
 ;; Don't edit!
 (def queries
@@ -409,14 +412,26 @@
    "ask"    experts-on-topic-query
    "answer" conversations-for-user-query})
 
+;; determines if item is contained in vec
+(defn in-vec [vec item]
+  (some #(= item %) vec))
+
+;; is this pmsg a request to get the time of a location?
+(defn is-time-request? [{:keys [cmd args]}]
+  (and (in-vec dining-locations cmd) (empty? args)))
 
 ;; Don't edit!
+;(defn read-state [state-mgr pmsg]
+;  (go
+;    (if-let [qfn (get queries (:cmd pmsg))]
+;      (<! (qfn state-mgr pmsg))
+;      {}))
+
 (defn read-state [state-mgr pmsg]
   (go
-    (if-let [qfn (get queries (:cmd pmsg))]
-      (<! (qfn state-mgr pmsg))
-      {})))
-
+   (if (is-time-request? pmsg)
+     (<! (times-query state-mgr pmsg))
+     {})))
 
 ;; Asgn 1.
 ;;
@@ -445,23 +460,31 @@
 
 
 (def default-func
-  (stateless (fn [& args] "Unknown command. Respond 'help' for assistance")))
+  (stateless (fn [& args] "Unknown command. Respond 'assist' for assistance")))
 
 (def help-func
   (stateless (fn [& args] help-message)))
 
+(defn get-time [times {:keys [cmd args user-id]}]
+    (let [time (get-in times [:location cmd])]
+      (if time [[] "there was a time"] [[] "no time :\\"])))
+
+(defn report-time [times {:keys [cmd args user-id]}]
+  [(action-insert [:location cmd] (first args)) "Report sent"])
+
 (defn create-handler [pmsg]
   (let [cmd (:cmd pmsg)
         args (:args pmsg)
-        help (= cmd "help")]
+        help (= cmd "assist")]
     (if help help-func
       (if (some #(= cmd %) dining-locations)
         ;; the user is trying to get or update wait times
         (if (empty? args)
           ;; user hasn't added a time -> trying to get a time
-          (println "getting time")
+          get-time
           (println "reporting time"))
         default-func))))
+
 ;; Don't edit!
 (defn output [o]
   (second o))
