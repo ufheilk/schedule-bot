@@ -11,7 +11,7 @@ To communicate with SCHEDULE-BOT, simply text the number (1) 615-398-6684. The f
 
  Welcome to SCHEDULE-BOT. There are three commands:
 1) assist: display help messages
-2) <dining-location>: get wait time for the locations
-3) <dining-location> <time>: report a time for a dining locations
+2) [dining-location]: get wait time for the locations
+3) [dining-location] [time]: report a time for a dining locations
 If you are reporting a time, be sure that you are accurate as possible and reporting the ~time spent in line at a particular location~
-Supported locations are: rand, pub, ebi, commons, kissam, grins
+Supported locationsare: rand, pub, ebi, commons, kissam, grins
